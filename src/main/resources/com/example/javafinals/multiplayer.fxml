@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.example.javafinals.MultiplayerController"
+      spacing="20"
+      alignment="CENTER">
+    <padding>
+        <Insets top="20" right="20" bottom="20" left="20"/>
+    </padding>
+
+    <Label text="Multiplayer Options" style="-fx-font-size: 24px;"/>
+
+    <HBox spacing="10">
+        <Button text="Host Game" onAction="#handleHost"/>
+        <Button text="Join Game" onAction="#handleJoin"/>
+    </HBox>
+
+    <HBox spacing="10" alignment="CENTER_LEFT">
+        <Label text="Server IP:"/>
+        <TextField fx:id="ipField" promptText="e.g., 127.0.0.1"/>
+    </HBox>
+
+    <Label fx:id="messageLabel" textFill="red"/>
+</VBox>
