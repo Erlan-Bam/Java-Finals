@@ -14,13 +14,12 @@ public class GameController {
     private Label statusLabel;
 
     private Button[][] buttons = new Button[3][3];
-    private char currentPlayer = 'X'; // Start with 'X'
-    private boolean gameActive = true;
+    private char currentMark = 'X'; // Start with 'X'
 
     @FXML
     public void initialize() {
         initializeGrid();
-        statusLabel.setText("Player " + currentPlayer + "'s turn.");
+        statusLabel.setText("Player X's turn.");
     }
 
     private void initializeGrid() {
@@ -29,13 +28,9 @@ public class GameController {
                 Button btn = new Button("");
                 btn.setPrefSize(100, 100);
                 btn.setStyle("-fx-font-size:24; -fx-font-weight:bold;");
-
-                // Local reference for the row/col
                 final int r = row;
                 final int c = col;
-
                 btn.setOnAction(e -> handleMove(r, c));
-
                 buttons[row][col] = btn;
                 gameGrid.add(btn, col, row);
             }
@@ -43,40 +38,26 @@ public class GameController {
     }
 
     private void handleMove(int row, int col) {
-        if (!gameActive) {
-            return; // If game is over, ignore clicks
-        }
-
         Button btn = buttons[row][col];
-
-        // If this cell is already taken, ignore the click
         if (!btn.getText().isEmpty()) {
-            return;
+            return; // Prevent overwriting a move
         }
 
-        // Mark the cell with current player's symbol
-        btn.setText(String.valueOf(currentPlayer));
-
-        // Check if the current player won
-        if (hasPlayerWon(currentPlayer)) {
-            statusLabel.setText("Player " + currentPlayer + " wins!");
-            gameActive = false;
-            return;
-        }
-
-        // Check if the board is full => draw
-        if (isBoardFull()) {
+        btn.setText(String.valueOf(currentMark)); // Set the current player's mark
+        if (checkWin(currentMark)) {
+            statusLabel.setText("Player " + currentMark + " wins!");
+            disableAllButtons();
+        } else if (isBoardFull()) {
             statusLabel.setText("It's a draw!");
-            gameActive = false;
-            return;
+            disableAllButtons();
+        } else {
+            // Switch turns
+            currentMark = (currentMark == 'X') ? 'O' : 'X';
+            statusLabel.setText("Player " + currentMark + "'s turn.");
         }
-
-        // Switch to the other player
-        currentPlayer = (currentPlayer == 'X') ? 'O' : 'X';
-        statusLabel.setText("Player " + currentPlayer + "'s turn.");
     }
 
-    private boolean hasPlayerWon(char player) {
+    private boolean checkWin(char player) {
         // Check rows
         for (int r = 0; r < 3; r++) {
             if (buttons[r][0].getText().equals(String.valueOf(player)) &&
@@ -116,5 +97,13 @@ public class GameController {
             }
         }
         return true;
+    }
+
+    private void disableAllButtons() {
+        for (Button[] row : buttons) {
+            for (Button btn : row) {
+                btn.setDisable(true);
+            }
+        }
     }
 }

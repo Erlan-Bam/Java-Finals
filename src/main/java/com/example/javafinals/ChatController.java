@@ -3,6 +3,10 @@ package com.example.javafinals;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import javafx.stage.Stage;
+import javafx.stage.Modality;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Scene;
 
 import org.java_websocket.client.WebSocketClient;
 import org.java_websocket.handshake.ServerHandshake;
@@ -130,6 +134,12 @@ public class ChatController {
         }
     }
 
+    public void closeWebSocketConnection() {
+        if(webSocketClient != null && !webSocketClient.isClosed()) {
+            webSocketClient.close();
+        }
+    }
+
     private void showAlert(Alert.AlertType type, String title, String content) {
         Alert alert = new Alert(type);
         alert.setTitle(title);
@@ -139,7 +149,27 @@ public class ChatController {
     }
 
     @FXML
-    protected void goToGame() throws Exception {
-        Main.switchScene("game.fxml");
+    protected void goToGame() {
+        try {
+            // Load the game FXML
+            FXMLLoader fxmlLoader = new FXMLLoader(Main.class.getResource("game.fxml"));
+            Scene gameScene = new Scene(fxmlLoader.load(), 600, 400); // Adjust size as needed
+
+            // Create a new Stage for the game window
+            Stage gameStage = new Stage();
+            gameStage.setTitle("Game - " + currentUser);
+            gameStage.setScene(gameScene);
+            gameStage.initModality(Modality.NONE); // You can change modality as needed
+
+            // Optionally, pass data to the GameController if needed
+            // GameController gameController = fxmlLoader.getController();
+            // gameController.initializeGame(currentUser);
+
+            // Show the game window
+            gameStage.show();
+        } catch (Exception e) {
+            e.printStackTrace();
+            showAlert(Alert.AlertType.ERROR, "Error", "Failed to open game window.");
+        }
     }
 }
