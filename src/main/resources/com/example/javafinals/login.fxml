@@ -31,13 +31,13 @@
 
     <!-- Input Fields -->
     <VBox spacing="15" alignment="CENTER" style="-fx-start-margin: 20px">
-        <VBox alignment="TOP_LEFT" spacing="5" style="-fx-max-width: 200px; -fx-max-height: 34px" >
+        <VBox alignment="TOP_LEFT" spacing="5" style="-fx-max-width: 300px; -fx-max-height: 34px" >
             <Label text="Username:" style="-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: white;" />
             <TextField fx:id="usernameField" promptText="Enter your username"
                        style="-fx-background-radius: 8; -fx-padding: 5; -fx-pref-width: 250px;" />
         </VBox>
 
-        <VBox alignment="TOP_LEFT" spacing="5" style="-fx-max-width: 200px; -fx-max-height: 34px">
+        <VBox alignment="TOP_LEFT" spacing="5" style="-fx-max-width: 300px; -fx-max-height: 34px">
             <Label text="Password:" style="-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: white;" />
             <PasswordField fx:id="passwordField" promptText="Enter your password"
                            style="-fx-background-radius: 8; -fx-padding: 5; -fx-pref-width: 250px;" />
