@@ -5,13 +5,9 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.GridPane;
-
 import java.io.*;
-import java.net.InetAddress;
-import java.net.NetworkInterface;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.Enumeration;
 
 public class GameController {
 
@@ -21,23 +17,19 @@ public class GameController {
     @FXML
     private Label statusLabel;
 
-    @FXML
-    private Label ipLabel; // Label to display host's IP
-
     private Button[][] buttons = new Button[3][3];
     private char myMark;
     private char opponentMark;
     private boolean myTurn;
 
-    // Networking variables
+    // Networking
     private Socket socket;
     private BufferedReader in;
     private PrintWriter out;
 
-    // Host IP (if joining)
+    // Host IP (if joining). If null -> we are hosting.
     private static String hostIP = null;
 
-    // Set the host IP before loading the game
     public static void setHostIP(String ip) {
         hostIP = ip;
     }
@@ -47,18 +39,22 @@ public class GameController {
         initializeGrid();
 
         if (hostIP == null) {
-            // Host the game
+            // We are HOSTING
             myMark = 'X';
             opponentMark = 'O';
             myTurn = true;
-            statusLabel.setText("Hosting game... Waiting for opponent to connect.");
-            displayHostIP();
+            statusLabel.setText("Hosting game on port 55555... Waiting for opponent to connect.");
+
+            // Start the server in a separate thread
             new Thread(this::hostGame).start();
         } else {
+            // We are JOINING
             myMark = 'O';
             opponentMark = 'X';
             myTurn = false;
-            statusLabel.setText("Joining game... Connecting to host.");
+            statusLabel.setText("Joining game at " + hostIP + ":55555...");
+
+            // Start the client connection in a separate thread
             new Thread(() -> joinGame(hostIP)).start();
         }
     }
@@ -68,7 +64,7 @@ public class GameController {
             for (int col = 0; col < 3; col++) {
                 Button btn = new Button("");
                 btn.setPrefSize(100, 100);
-                btn.setStyle("-fx-font-size:36");
+                btn.setStyle("-fx-font-size:24; -fx-font-weight:bold;");
                 final int r = row;
                 final int c = col;
                 btn.setOnAction(e -> handleMove(r, c));
@@ -79,14 +75,9 @@ public class GameController {
     }
 
     private void handleMove(int row, int col) {
-        if (!myTurn) {
-            return;
-        }
-
+        if (!myTurn) return;
         Button btn = buttons[row][col];
-        if (!btn.getText().isEmpty()) {
-            return;
-        }
+        if (!btn.getText().isEmpty()) return;
 
         btn.setText(String.valueOf(myMark));
         sendMove(row, col);
@@ -103,6 +94,7 @@ public class GameController {
 
     private void hostGame() {
         try (ServerSocket serverSocket = new ServerSocket(55555)) {
+            // Accept one client connection
             socket = serverSocket.accept();
             Platform.runLater(() -> statusLabel.setText("Opponent connected. Your turn."));
             setupStreams();
@@ -138,6 +130,7 @@ public class GameController {
                     String[] parts = input.split(",");
                     int row = Integer.parseInt(parts[0]);
                     int col = Integer.parseInt(parts[1]);
+
                     Platform.runLater(() -> {
                         buttons[row][col].setText(String.valueOf(opponentMark));
                         checkWin();
@@ -153,6 +146,7 @@ public class GameController {
     }
 
     private void checkWin() {
+        // Check if current player or opponent won
         if (hasPlayerWon(myMark)) {
             statusLabel.setText("You win!");
             disableAllButtons();
@@ -168,34 +162,33 @@ public class GameController {
     }
 
     private boolean hasPlayerWon(char player) {
-        for (int row = 0; row < 3; row++) {
-            if (buttons[row][0].getText().equals(String.valueOf(player)) &&
-                    buttons[row][1].getText().equals(String.valueOf(player)) &&
-                    buttons[row][2].getText().equals(String.valueOf(player))) {
+        // Check rows
+        for (int r = 0; r < 3; r++) {
+            if (buttons[r][0].getText().equals(String.valueOf(player)) &&
+                    buttons[r][1].getText().equals(String.valueOf(player)) &&
+                    buttons[r][2].getText().equals(String.valueOf(player))) {
                 return true;
             }
         }
-
-        for (int col = 0; col < 3; col++) {
-            if (buttons[0][col].getText().equals(String.valueOf(player)) &&
-                    buttons[1][col].getText().equals(String.valueOf(player)) &&
-                    buttons[2][col].getText().equals(String.valueOf(player))) {
+        // Check columns
+        for (int c = 0; c < 3; c++) {
+            if (buttons[0][c].getText().equals(String.valueOf(player)) &&
+                    buttons[1][c].getText().equals(String.valueOf(player)) &&
+                    buttons[2][c].getText().equals(String.valueOf(player))) {
                 return true;
             }
         }
-
+        // Check diagonals
         if (buttons[0][0].getText().equals(String.valueOf(player)) &&
                 buttons[1][1].getText().equals(String.valueOf(player)) &&
                 buttons[2][2].getText().equals(String.valueOf(player))) {
             return true;
         }
-
         if (buttons[0][2].getText().equals(String.valueOf(player)) &&
                 buttons[1][1].getText().equals(String.valueOf(player)) &&
                 buttons[2][0].getText().equals(String.valueOf(player))) {
             return true;
         }
-
         return false;
     }
 
@@ -226,33 +219,5 @@ public class GameController {
         } catch (IOException e) {
             e.printStackTrace();
         }
-    }
-
-    private void displayHostIP() {
-        String ip = getLocalIPAddress();
-        if (ip != null) {
-            Platform.runLater(() -> ipLabel.setText("Your IP Address: " + ip));
-        } else {
-            Platform.runLater(() -> ipLabel.setText("Unable to determine IP Address."));
-        }
-    }
-
-    private String getLocalIPAddress() {
-        try {
-            Enumeration<NetworkInterface> nets = NetworkInterface.getNetworkInterfaces();
-            for (NetworkInterface netint : java.util.Collections.list(nets)) {
-                if (netint.isUp() && !netint.isLoopback() && !netint.isVirtual()) {
-                    Enumeration<InetAddress> inetAddresses = netint.getInetAddresses();
-                    for (InetAddress inetAddress : java.util.Collections.list(inetAddresses)) {
-                        if (!inetAddress.isLoopbackAddress() && inetAddress instanceof java.net.Inet4Address) {
-                            return inetAddress.getHostAddress();
-                        }
-                    }
-                }
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return null;
     }
 }
