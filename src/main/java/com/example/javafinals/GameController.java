@@ -13,6 +13,9 @@ public class GameController {
     @FXML
     private Label statusLabel;
 
+    @FXML
+    private Button resetButton; // Add reset button
+
     private Button[][] buttons = new Button[3][3];
     private char currentMark = 'X'; // Start with 'X'
 
@@ -20,6 +23,7 @@ public class GameController {
     public void initialize() {
         initializeGrid();
         statusLabel.setText("Player X's turn.");
+        resetButton.setOnAction(e -> resetGame()); // Attach reset action
     }
 
     private void initializeGrid() {
@@ -105,5 +109,16 @@ public class GameController {
                 btn.setDisable(true);
             }
         }
+    }
+
+    private void resetGame() {
+        for (Button[] row : buttons) {
+            for (Button btn : row) {
+                btn.setText("");
+                btn.setDisable(false);
+            }
+        }
+        currentMark = 'X'; // Reset to Player X
+        statusLabel.setText("Player X's turn.");
     }
 }

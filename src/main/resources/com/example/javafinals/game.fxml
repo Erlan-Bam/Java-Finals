@@ -5,23 +5,35 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
 
 <VBox xmlns:fx="http://javafx.com/fxml/1"
       fx:controller="com.example.javafinals.GameController"
+      alignment="CENTER"
       spacing="20"
-      alignment="CENTER">
+      style="-fx-background-color: linear-gradient(to bottom, #162e36, #289225); -fx-padding: 40;">
     <padding>
-        <Insets top="20" right="20" bottom="20" left="20"/>
+        <Insets top="25" right="25" bottom="25" left="25"/>
     </padding>
 
-    <Label text="Tic Tac Toe" style="-fx-font-size: 24px;"/>
+    <!-- Title -->
+    <Label text="Tic Tac Toe" alignment="CENTER" style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: white;">
+        <font>
+            <Font name="Arial" size="24" style="bold"/>
+        </font>
+    </Label>
 
-    <!-- We no longer need to display an IP address, so we can remove or hide this -->
-    <Label fx:id="ipLabel" text="" style="-fx-font-size: 16px; -fx-text-fill: blue;" visible="false"/>
+    <!-- Status Label -->
+    <Label fx:id="statusLabel" text="Player X's turn." style="-fx-font-size: 16px; -fx-text-fill: white;" />
 
-    <GridPane fx:id="gameGrid" hgap="10" vgap="10">
-        <!-- Buttons will be added programmatically -->
-    </GridPane>
+    <!-- Game Grid Wrapper -->
+    <VBox alignment="CENTER">
+        <GridPane fx:id="gameGrid" hgap="10" vgap="10" style="-fx-padding: 10; -fx-alignment: CENTER;">
+            <!-- Buttons will be added programmatically -->
+        </GridPane>
+    </VBox>
 
-    <Label fx:id="statusLabel" text="Welcome to Tic Tac Toe!" style="-fx-font-size: 16px;"/>
+    <!-- Reset Button -->
+    <Button fx:id="resetButton" text="Reset Game"
+            style="-fx-background-color: #91BB45; -fx-text-fill: white; -fx-font-size: 14px; -fx-background-radius: 8; -fx-pref-width: 200px; -fx-pref-height: 34px;" />
 </VBox>
