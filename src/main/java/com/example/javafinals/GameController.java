@@ -1,9 +1,13 @@
 package com.example.javafinals;
 
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.GridPane;
+import java.io.*;
+import java.net.ServerSocket;
+import java.net.Socket;
 
 public class GameController {
 
@@ -14,13 +18,45 @@ public class GameController {
     private Label statusLabel;
 
     private Button[][] buttons = new Button[3][3];
-    private char currentPlayer = 'X'; // Start with 'X'
-    private boolean gameActive = true;
+    private char myMark;
+    private char opponentMark;
+    private boolean myTurn;
+
+    // Networking
+    private Socket socket;
+    private BufferedReader in;
+    private PrintWriter out;
+
+    // Host IP (if joining). If null -> we are hosting.
+    private static String hostIP = null;
+
+    public static void setHostIP(String ip) {
+        hostIP = ip;
+    }
 
     @FXML
     public void initialize() {
         initializeGrid();
-        statusLabel.setText("Player " + currentPlayer + "'s turn.");
+
+        if (hostIP == null) {
+            // We are HOSTING
+            myMark = 'X';
+            opponentMark = 'O';
+            myTurn = true;
+            statusLabel.setText("Hosting game on port 55555... Waiting for opponent to connect.");
+
+            // Start the server in a separate thread
+            new Thread(this::hostGame).start();
+        } else {
+            // We are JOINING
+            myMark = 'O';
+            opponentMark = 'X';
+            myTurn = false;
+            statusLabel.setText("Joining game at " + hostIP + ":55555...");
+
+            // Start the client connection in a separate thread
+            new Thread(() -> joinGame(hostIP)).start();
+        }
     }
 
     private void initializeGrid() {
@@ -29,13 +65,9 @@ public class GameController {
                 Button btn = new Button("");
                 btn.setPrefSize(100, 100);
                 btn.setStyle("-fx-font-size:24; -fx-font-weight:bold;");
-
-                // Local reference for the row/col
                 final int r = row;
                 final int c = col;
-
                 btn.setOnAction(e -> handleMove(r, c));
-
                 buttons[row][col] = btn;
                 gameGrid.add(btn, col, row);
             }
@@ -43,37 +75,90 @@ public class GameController {
     }
 
     private void handleMove(int row, int col) {
-        if (!gameActive) {
-            return; // If game is over, ignore clicks
-        }
-
+        if (!myTurn) return;
         Button btn = buttons[row][col];
+        if (!btn.getText().isEmpty()) return;
 
-        // If this cell is already taken, ignore the click
-        if (!btn.getText().isEmpty()) {
-            return;
+        btn.setText(String.valueOf(myMark));
+        sendMove(row, col);
+        myTurn = false;
+        statusLabel.setText("Opponent's turn.");
+        checkWin();
+    }
+
+    private void sendMove(int row, int col) {
+        if (out != null) {
+            out.println(row + "," + col);
         }
+    }
 
-        // Mark the cell with current player's symbol
-        btn.setText(String.valueOf(currentPlayer));
-
-        // Check if the current player won
-        if (hasPlayerWon(currentPlayer)) {
-            statusLabel.setText("Player " + currentPlayer + " wins!");
-            gameActive = false;
-            return;
+    private void hostGame() {
+        try (ServerSocket serverSocket = new ServerSocket(55555)) {
+            // Accept one client connection
+            socket = serverSocket.accept();
+            Platform.runLater(() -> statusLabel.setText("Opponent connected. Your turn."));
+            setupStreams();
+            listenForMoves();
+        } catch (IOException e) {
+            e.printStackTrace();
+            Platform.runLater(() -> statusLabel.setText("Error hosting game."));
         }
+    }
 
-        // Check if the board is full => draw
-        if (isBoardFull()) {
+    private void joinGame(String hostIP) {
+        try {
+            socket = new Socket(hostIP, 55555);
+            Platform.runLater(() -> statusLabel.setText("Connected to host. Opponent's turn."));
+            setupStreams();
+            listenForMoves();
+        } catch (IOException e) {
+            e.printStackTrace();
+            Platform.runLater(() -> statusLabel.setText("Error connecting to host."));
+        }
+    }
+
+    private void setupStreams() throws IOException {
+        in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+        out = new PrintWriter(socket.getOutputStream(), true);
+    }
+
+    private void listenForMoves() {
+        new Thread(() -> {
+            String input;
+            try {
+                while ((input = in.readLine()) != null) {
+                    String[] parts = input.split(",");
+                    int row = Integer.parseInt(parts[0]);
+                    int col = Integer.parseInt(parts[1]);
+
+                    Platform.runLater(() -> {
+                        buttons[row][col].setText(String.valueOf(opponentMark));
+                        checkWin();
+                        myTurn = true;
+                        statusLabel.setText("Your turn.");
+                    });
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+                Platform.runLater(() -> statusLabel.setText("Connection lost."));
+            }
+        }).start();
+    }
+
+    private void checkWin() {
+        // Check if current player or opponent won
+        if (hasPlayerWon(myMark)) {
+            statusLabel.setText("You win!");
+            disableAllButtons();
+            closeConnection();
+        } else if (hasPlayerWon(opponentMark)) {
+            statusLabel.setText("Opponent wins!");
+            disableAllButtons();
+            closeConnection();
+        } else if (isBoardFull()) {
             statusLabel.setText("It's a draw!");
-            gameActive = false;
-            return;
+            closeConnection();
         }
-
-        // Switch to the other player
-        currentPlayer = (currentPlayer == 'X') ? 'O' : 'X';
-        statusLabel.setText("Player " + currentPlayer + "'s turn.");
     }
 
     private boolean hasPlayerWon(char player) {
@@ -116,5 +201,23 @@ public class GameController {
             }
         }
         return true;
+    }
+
+    private void disableAllButtons() {
+        for (Button[] row : buttons) {
+            for (Button btn : row) {
+                btn.setDisable(true);
+            }
+        }
+    }
+
+    private void closeConnection() {
+        try {
+            if (socket != null && !socket.isClosed()) {
+                socket.close();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }
