@@ -29,7 +29,7 @@ public class LoginController {
         try {
             if (DatabaseController.authenticateUser(username, password)) {
                 messageLabel.setText("Login successful!");
-                Main.switchScene("multiplayer.fxml");
+                Main.switchScene("game.fxml");
             } else {
                 messageLabel.setText("Invalid credentials.");
             }

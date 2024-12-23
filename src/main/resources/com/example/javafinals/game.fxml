@@ -16,12 +16,12 @@
 
     <Label text="Tic Tac Toe" style="-fx-font-size: 24px;"/>
 
-    <!-- Label to display host's IP address -->
-    <Label fx:id="ipLabel" text="" style="-fx-font-size: 16px; -fx-text-fill: blue;"/>
+    <!-- We no longer need to display an IP address, so we can remove or hide this -->
+    <Label fx:id="ipLabel" text="" style="-fx-font-size: 16px; -fx-text-fill: blue;" visible="false"/>
 
     <GridPane fx:id="gameGrid" hgap="10" vgap="10">
         <!-- Buttons will be added programmatically -->
     </GridPane>
 
-    <Label fx:id="statusLabel" text="Waiting for opponent..." style="-fx-font-size: 16px;"/>
+    <Label fx:id="statusLabel" text="Welcome to Tic Tac Toe!" style="-fx-font-size: 16px;"/>
 </VBox>

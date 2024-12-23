@@ -93,7 +93,7 @@ public class GameController {
     }
 
     private void hostGame() {
-        try (ServerSocket serverSocket = new ServerSocket(8080)) {
+        try (ServerSocket serverSocket = new ServerSocket(55555)) {
             // Accept one client connection
             socket = serverSocket.accept();
             Platform.runLater(() -> statusLabel.setText("Opponent connected. Your turn."));
