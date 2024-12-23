@@ -10,35 +10,34 @@
 <?import javafx.scene.layout.VBox?>
 
 <BorderPane xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="com.example.javafinals.ChatController">
+            fx:controller="com.example.javafinals.ChatController"
+            style="-fx-background-color: linear-gradient(to bottom, #162e36, #289225); -fx-padding: 20;">
     <top>
-        <HBox spacing="10">
-            <Label text="Chat" style="-fx-font-size: 24px;" BorderPane.alignment="CENTER"/>
-            <Button text="Play Game" onAction="#goToGame" style="-fx-font-size: 16px;"/>
+        <HBox spacing="10" alignment="CENTER" style="-fx-padding: 10;">
+            <Label text="Chat" style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: white;"/>
+            <Button text="Play Game" onAction="#goToGame"
+                    style="-fx-background-color: #91BB45; -fx-text-fill: white; -fx-font-size: 16px; -fx-background-radius: 10;"/>
         </HBox>
     </top>
     <center>
-        <TextArea fx:id="chatArea" editable="false" wrapText="true" BorderPane.alignment="CENTER" />
+        <TextArea fx:id="chatArea" editable="false" wrapText="true"
+                  style="-fx-control-inner-background: rgba(255, 255, 255, 0.8); -fx-border-radius: 10; -fx-background-radius: 10; -fx-padding: 10; -fx-font-size: 14px;"
+                  BorderPane.alignment="CENTER"/>
     </center>
     <bottom>
-        <HBox spacing="10">
-            <padding>
-                <Insets top="10" right="10" bottom="10" left="10"/>
-            </padding>
-            <TextField fx:id="messageField" promptText="Enter your message..." HBox.hgrow="ALWAYS"/>
-            <Button text="Send" onAction="#handleSend"/>
+        <HBox spacing="10" style="-fx-padding: 10;">
+            <TextField fx:id="messageField" promptText="Enter your message..."
+                       HBox.hgrow="ALWAYS"
+                       style="-fx-background-radius: 10; -fx-font-size: 14px; -fx-padding: 5;"/>
+            <Button text="Send" onAction="#handleSend"
+                    style="-fx-background-color: #3F813D; -fx-text-fill: white; -fx-font-size: 14px; -fx-background-radius: 10;"/>
         </HBox>
     </bottom>
     <left>
-        <VBox spacing="10">
-            <padding>
-                <Insets top="10" right="10" bottom="10" left="10"/>
-            </padding>
-            <Label text="Receiver:"/>
-            <TextField fx:id="receiverField" promptText="Enter receiver's username"/>
+        <VBox spacing="10" style="-fx-padding: 10;">
+            <Label text="Receiver:" style="-fx-font-size: 16px; -fx-text-fill: white;"/>
+            <TextField fx:id="receiverField" promptText="Enter receiver's username"
+                       style="-fx-background-radius: 10; -fx-font-size: 14px; -fx-padding: 5;"/>
         </VBox>
     </left>
-    <padding>
-        <Insets top="10" right="10" bottom="10" left="10"/>
-    </padding>
 </BorderPane>
