@@ -6,32 +6,59 @@
 <?import javafx.scene.control.PasswordField?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
+<?import javafx.scene.text.FontWeight?>
 
-<GridPane xmlns:fx="http://javafx.com/fxml"
-          fx:controller="com.example.javafinals.RegistrationController"
-          alignment="CENTER" hgap="10" vgap="10">
+
+<VBox xmlns:fx="http://javafx.com/fxml"
+      fx:controller="com.example.javafinals.RegistrationController"
+      alignment="CENTER"
+      spacing="15"
+      style="-fx-background-color: linear-gradient(to bottom,#162e36, #289225); -fx-padding: 40;">
     <padding>
         <Insets top="25" right="25" bottom="25" left="25"/>
     </padding>
 
-    <Label text="Register" GridPane.columnIndex="0" GridPane.rowIndex="0" GridPane.columnSpan="2">
+    <!-- Title -->
+    <Label text="Register" alignment="CENTER">
         <font>
-            <Font size="20"/>
+            <Font name="Arial" size="24" style="bold"/>
         </font>
+        <style>
+            -fx-text-fill: white;
+        </style>
     </Label>
 
-    <Label text="Username:" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
-    <TextField fx:id="usernameField" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+    <!-- Input Fields -->
+    <VBox spacing="15" alignment="CENTER">
+        <VBox alignment="TOP_LEFT" spacing="5" style="-fx-max-width: 300px; -fx-max-height: 34px">
+            <Label text="Username:" style="-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: white;" />
+            <TextField fx:id="usernameField" promptText="Enter your username"
+                       style="-fx-background-radius: 8; -fx-padding: 5; -fx-pref-width: 250px;" />
+        </VBox>
 
-    <Label text="Email:" GridPane.columnIndex="0" GridPane.rowIndex="2"/>
-    <TextField fx:id="emailField" GridPane.columnIndex="1" GridPane.rowIndex="2"/>
+        <VBox alignment="TOP_LEFT" spacing="5" style="-fx-max-width: 300px; -fx-max-height: 34px">
+            <Label text="Email:" style="-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: white;" />
+            <TextField fx:id="emailField" promptText="Enter your email"
+                       style="-fx-background-radius: 8; -fx-padding: 5; -fx-pref-width: 250px;" />
+        </VBox>
 
-    <Label text="Password:" GridPane.columnIndex="0" GridPane.rowIndex="3"/>
-    <PasswordField fx:id="passwordField" GridPane.columnIndex="1" GridPane.rowIndex="3"/>
+        <VBox alignment="TOP_LEFT" spacing="5" style="-fx-max-width: 300px; -fx-max-height: 34px">
+            <Label text="Password:" style="-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: white;" />
+            <PasswordField fx:id="passwordField" promptText="Enter your password"
+                           style="-fx-background-radius: 8; -fx-padding: 5; -fx-pref-width: 250px;" />
+        </VBox>
+    </VBox>
 
-    <Button text="Register" onAction="#handleRegister" GridPane.columnIndex="1" GridPane.rowIndex="4"/>
-    <Button text="Back to Login" onAction="#goToLogin" GridPane.columnIndex="1" GridPane.rowIndex="5"/>
+    <!-- Buttons -->
+    <VBox spacing="20" alignment="CENTER">
+        <Button text="Register" onAction="#handleRegister"
+                style="-fx-background-color: #3F813D; -fx-text-fill: white; -fx-font-size: 14px; -fx-background-radius: 8; -fx-pref-width: 200px; -fx-pref-height: 34px;" />
+        <Button text="Back to Login" onAction="#goToLogin"
+                style="-fx-background-color: #91BB45; -fx-text-fill: white; -fx-font-size: 14px; -fx-background-radius: 8; -fx-pref-width: 200px; -fx-pref-height: 34px;" />
+    </VBox>
 
-    <Label fx:id="messageLabel" GridPane.columnIndex="0" GridPane.rowIndex="6" GridPane.columnSpan="2"/>
-</GridPane>
+    <!-- Message Label -->
+    <Label fx:id="messageLabel" alignment="CENTER" style="-fx-text-fill: red; -fx-font-size: 12px;" />
+</VBox>
