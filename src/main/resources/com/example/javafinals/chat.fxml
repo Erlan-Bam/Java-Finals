@@ -7,37 +7,50 @@
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.control.ScrollPane?>
 
 <BorderPane xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="com.example.javafinals.ChatController"
-            style="-fx-background-color: linear-gradient(to bottom, #162e36, #289225); -fx-padding: 20;">
+            style="-fx-background-color: linear-gradient(to bottom, #162e36, #289225); -fx-padding: 10;">
+
+    <!-- Header Section -->
     <top>
-        <HBox spacing="10" alignment="CENTER" style="-fx-padding: 10;">
-            <Label text="Chat" style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: white;"/>
-            <Button text="Play Game" onAction="#goToGame"
-                    style="-fx-background-color: #91BB45; -fx-text-fill: white; -fx-font-size: 16px; -fx-background-radius: 10;"/>
+        <HBox style="-fx-background-color: #162e36; -fx-padding: 15;" spacing="10">
+            <!-- Left Side: Spark Chat -->
+            <Label text="Spark Chat"
+                   style="-fx-font-size: 24px; -fx-text-fill: white; -fx-font-weight: bold;" />
+
+            <!-- Spacer to push Receiver field and button to the right -->
+
+            <!-- Right Side: Receiver Field and Play Button -->
+            <HBox spacing="10" alignment="CENTER">
+                <Label text="Receiver:"
+                       style="-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: white;" />
+                <TextField fx:id="receiverField" promptText="Receiver's username"
+                           style="-fx-background-radius: 10; -fx-padding: 5; -fx-pref-width: 200px;" />
+                <Button text="Play Game" onAction="#goToGame"
+                        style="-fx-background-color: #3F813D; -fx-text-fill: white; -fx-font-size: 14px; -fx-background-radius: 8;" />
+            </HBox>
         </HBox>
     </top>
+
+    <!-- Chat Area Section -->
     <center>
-        <TextArea fx:id="chatArea" editable="false" wrapText="true"
-                  style="-fx-control-inner-background: rgba(255, 255, 255, 0.8); -fx-border-radius: 10; -fx-background-radius: 10; -fx-padding: 10; -fx-font-size: 14px;"
-                  BorderPane.alignment="CENTER"/>
+        <ScrollPane fitToWidth="true" fitToHeight="true"
+                    style="-fx-background-color: transparent; -fx-padding: 10;">
+            <TextArea fx:id="chatArea" editable="false" wrapText="true"
+                      style="-fx-font-size: 14px; -fx-background-color: white; -fx-border-radius: 10; -fx-padding: 10;" />
+        </ScrollPane>
     </center>
+
+    <!-- Bottom Section for Message Input -->
     <bottom>
-        <HBox spacing="10" style="-fx-padding: 10;">
-            <TextField fx:id="messageField" promptText="Enter your message..."
-                       HBox.hgrow="ALWAYS"
-                       style="-fx-background-radius: 10; -fx-font-size: 14px; -fx-padding: 5;"/>
+        <HBox spacing="10" alignment="CENTER" style="-fx-background-color: #3F813D; -fx-padding: 15;">
+            <TextField fx:id="messageField" promptText="Write a message..."
+                       style="-fx-background-radius: 10; -fx-padding: 10; -fx-pref-width: 400px;" />
             <Button text="Send" onAction="#handleSend"
-                    style="-fx-background-color: #3F813D; -fx-text-fill: white; -fx-font-size: 14px; -fx-background-radius: 10;"/>
+                    style="-fx-background-color: #91BB45; -fx-text-fill: white; -fx-font-size: 14px; -fx-background-radius: 10;" />
         </HBox>
     </bottom>
-    <left>
-        <VBox spacing="10" style="-fx-padding: 10;">
-            <Label text="Receiver:" style="-fx-font-size: 16px; -fx-text-fill: white;"/>
-            <TextField fx:id="receiverField" promptText="Enter receiver's username"
-                       style="-fx-background-radius: 10; -fx-font-size: 14px; -fx-padding: 5;"/>
-        </VBox>
-    </left>
+
 </BorderPane>

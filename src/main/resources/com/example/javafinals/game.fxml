@@ -5,29 +5,35 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.VBox?>
-
 <?import javafx.scene.text.Font?>
-<VBox xmlns:fx="http://javafx.com/fxml"
+
+<VBox xmlns:fx="http://javafx.com/fxml/1"
       fx:controller="com.example.javafinals.GameController"
       alignment="CENTER"
       spacing="20"
       style="-fx-background-color: linear-gradient(to bottom, #162e36, #289225); -fx-padding: 40;">
+    <padding>
+        <Insets top="25" right="25" bottom="25" left="25"/>
+    </padding>
+
     <!-- Title -->
-    <Label text="Tic Tac Toe" alignment="CENTER">
+    <Label text="Tic Tac Toe" alignment="CENTER" style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: white;">
         <font>
-            <Font name="Arial" size="24"/>
+            <Font name="Arial" size="24" style="bold"/>
         </font>
-        <style>
-            -fx-text-fill: white;
-        </style>
     </Label>
 
-    <!-- Game Grid -->
-    <GridPane fx:id="gameGrid" alignment="CENTER" hgap="10" vgap="10"
-              style="-fx-padding: 20; -fx-background-color: rgba(255, 255, 255, 0.2); -fx-border-radius: 10; -fx-background-radius: 10;">
-        <!-- The grid buttons will be added dynamically in the controller -->
-    </GridPane>
-
     <!-- Status Label -->
-    <Label fx:id="statusLabel" alignment="CENTER" style="-fx-text-fill: white; -fx-font-size: 16px;" />
+    <Label fx:id="statusLabel" text="Player X's turn." style="-fx-font-size: 16px; -fx-text-fill: white;" />
+
+    <!-- Game Grid Wrapper -->
+    <VBox alignment="CENTER">
+        <GridPane fx:id="gameGrid" hgap="10" vgap="10" style="-fx-padding: 10; -fx-alignment: CENTER;">
+            <!-- Buttons will be added programmatically -->
+        </GridPane>
+    </VBox>
+
+    <!-- Reset Button -->
+    <Button fx:id="resetButton" text="Reset Game"
+            style="-fx-background-color: #91BB45; -fx-text-fill: white; -fx-font-size: 14px; -fx-background-radius: 8; -fx-pref-width: 200px; -fx-pref-height: 34px;" />
 </VBox>
