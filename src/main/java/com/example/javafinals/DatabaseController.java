@@ -4,15 +4,14 @@ import java.sql.*;
 
 public class DatabaseController {
 
-    private static final String URL = "jdbc:postgresql://localhost:5432/java-finals";
+    private static final String URL = "jdbc:postgresql://junction.proxy.rlwy.net:15131/railway";
     private static final String USER = "postgres";
-    private static final String PASSWORD = "Yerlan2k5";
+    private static final String PASSWORD = "cdZGLCHAEZlYZWaEZnIrGZtiPZXqWVTm";
 
     private static Connection getConnection() throws SQLException {
         return DriverManager.getConnection(URL, USER, PASSWORD);
     }
 
-    // Registers a new user
     public static boolean registerUser(String username, String email, String password) throws Exception {
         String checkUserQuery = "SELECT * FROM users WHERE username = ? OR email = ?";
         String insertUserQuery = "INSERT INTO users (username, email, password) VALUES (?, ?, ?)";
