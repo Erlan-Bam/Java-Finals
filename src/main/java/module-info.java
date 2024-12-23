@@ -11,6 +11,8 @@ module com.example.javafinals {
     requires eu.hansolo.tilesfx;
     requires com.almasb.fxgl.all;
     requires java.sql;
+    requires Java.WebSocket;
+    requires org.json;
 
     opens com.example.javafinals to javafx.fxml;
     exports com.example.javafinals;
